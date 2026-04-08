@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+.business-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.business-list__empty {
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+
+  h3 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0.45rem 0 0;
+    color: var(--text-muted);
+  }
+}

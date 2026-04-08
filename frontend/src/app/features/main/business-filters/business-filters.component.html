@@ -1,0 +1,38 @@
+<section class="filters" aria-label="Business filters">
+  <div class="filters__item">
+    <label for="typeFilter">Business type</label>
+    <select id="typeFilter" [value]="selectedType" (change)="onTypeChanged($event)">
+      <option value="">All types</option>
+      <option *ngFor="let type of businessTypes" [value]="type">{{ type }}</option>
+    </select>
+  </div>
+
+  <div class="filters__item">
+    <label for="cityFilter">City</label>
+    <select id="cityFilter" [value]="selectedCity" (change)="onCityChanged($event)">
+      <option value="">All cities</option>
+      <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+    </select>
+  </div>
+
+  <div class="filters__item">
+    <label for="ratingFilter">Minimum rating</label>
+    <select id="ratingFilter" [value]="minimumRating" (change)="onMinimumRatingChanged($event)">
+      <option [value]="0">Any rating</option>
+      <option [value]="4">4.0+</option>
+      <option [value]="4.5">4.5+</option>
+      <option [value]="4.8">4.8+</option>
+    </select>
+  </div>
+
+  <div class="filters__item filters__item--search">
+    <label for="searchFilter">Search by name</label>
+    <input
+      id="searchFilter"
+      type="search"
+      [value]="searchTerm"
+      (input)="onSearchChanged($event)"
+      placeholder="e.g. Smile Point"
+    />
+  </div>
+</section>

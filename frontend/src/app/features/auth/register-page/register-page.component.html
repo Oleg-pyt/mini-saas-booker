@@ -1,0 +1,37 @@
+<section class="auth-page reveal">
+  <article class="auth-card">
+    <p class="auth-card__eyebrow">Booker Access</p>
+    <h1>Create account</h1>
+    <p>Register to manage bookings and business pages.</p>
+
+    <ng-container *ngIf="state$ | async as state">
+      <p class="auth-card__error" *ngIf="state.error">{{ state.error }}</p>
+
+      <label>
+        Full name
+        <input [(ngModel)]="name" type="text" placeholder="e.g. John Doe" />
+      </label>
+
+      <label>
+        Login
+        <input [(ngModel)]="login" type="text" placeholder="e.g. john_doe" />
+      </label>
+
+      <label>
+        Email
+        <input [(ngModel)]="email" type="email" placeholder="john@booker.app" />
+      </label>
+
+      <label>
+        Password
+        <input [(ngModel)]="password" type="password" placeholder="At least 8 chars" />
+      </label>
+
+      <button type="button" (click)="submit()" [disabled]="state.isLoading">
+        {{ state.isLoading ? 'Creating account...' : 'Create account' }}
+      </button>
+
+      <button type="button" class="auth-card__secondary" (click)="goToLogin()">Back to login</button>
+    </ng-container>
+  </article>
+</section>

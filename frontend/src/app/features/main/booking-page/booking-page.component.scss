@@ -1,0 +1,81 @@
+:host {
+  display: block;
+}
+
+.booking-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+  }
+}
+
+.booking-page__header {
+  margin: 1rem 0 1.2rem;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  padding: 1rem;
+  box-shadow: var(--shadow-soft);
+
+  h1 {
+    margin: 0;
+    font-size: clamp(1.35rem, 3.4vw, 1.95rem);
+  }
+
+  p {
+    margin: 0.35rem 0 0;
+    color: var(--text-muted);
+  }
+}
+
+.booking-page__progress {
+  margin-top: 1rem;
+}
+
+.booking-page__progress-track {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--line-soft) 85%, transparent);
+  overflow: hidden;
+}
+
+.booking-page__progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  transition: width 260ms ease;
+}
+
+.booking-page__progress-labels {
+  list-style: none;
+  margin: 0.55rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.35rem;
+
+  li {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .is-active {
+    color: var(--accent);
+  }
+}
+
+.booking-page__error {
+  border: 1px solid #ef4444;
+  background: color-mix(in srgb, #ef4444 10%, var(--surface));
+  color: #ef4444;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+}

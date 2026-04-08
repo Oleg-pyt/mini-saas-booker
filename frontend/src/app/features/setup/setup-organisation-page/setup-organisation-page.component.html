@@ -1,0 +1,153 @@
+<section class="setup-page reveal">
+  <header class="setup-page__header">
+    <p class="setup-page__eyebrow">Setup</p>
+    <h1>Create Organisation</h1>
+    <p>Summary, services and team are configured in separate tabs. Final submit validates all tabs.</p>
+  </header>
+
+  <nav class="setup-tabs" aria-label="Setup tabs">
+    <button type="button" [class.active]="activeTab === 'summary'" (click)="setTab('summary')">1. Summary</button>
+    <button type="button" [class.active]="activeTab === 'services'" (click)="setTab('services')">2. Services</button>
+    <button type="button" [class.active]="activeTab === 'team'" (click)="setTab('team')">3. Team</button>
+  </nav>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="setup-form">
+    <section class="setup-card" *ngIf="activeTab === 'summary'">
+      <h2>Organisation</h2>
+
+      <label>
+        <span>Name *</span>
+        <input formControlName="name" type="text" placeholder="Bold Cut Barbershop" />
+      </label>
+
+      <label>
+        <span>Slug *</span>
+        <input formControlName="slug" type="text" placeholder="bold-cut-barbershop" (input)="normalizeSlug($event)" />
+      </label>
+
+      <label>
+        <span>Image URL *</span>
+        <input formControlName="image" type="url" placeholder="https://..." />
+      </label>
+
+      <label>
+        <span>Type *</span>
+        <input formControlName="type" type="text" placeholder="Barbershop" />
+      </label>
+
+      <label>
+        <span>City *</span>
+        <input formControlName="city" type="text" placeholder="Kyiv" />
+      </label>
+
+      <label>
+        <span>Address *</span>
+        <input formControlName="address" type="text" placeholder="12 Khreshchatyk St" />
+      </label>
+
+      <label>
+        <span>Description</span>
+        <textarea formControlName="description" rows="4" placeholder="Optional business description"></textarea>
+      </label>
+    </section>
+
+    <section class="setup-card" *ngIf="activeTab === 'services'">
+      <div class="setup-card__header">
+        <h2>Services *</h2>
+        <button type="button" class="secondary" (click)="addService()">Add service</button>
+      </div>
+
+      <div formArrayName="services" class="services-list">
+        <div class="service-item" *ngFor="let service of services.controls; let index = index" [formGroupName]="index">
+          <div class="service-item__header">
+            <h3>Service {{ index + 1 }}</h3>
+            <button type="button" class="danger" (click)="removeService(index)" [disabled]="services.length === 1">Remove</button>
+          </div>
+
+          <label>
+            <span>Name *</span>
+            <input formControlName="name" type="text" placeholder="Haircut" />
+          </label>
+
+          <label>
+            <span>Duration (minutes) *</span>
+            <input formControlName="durationMinutes" type="number" min="5" step="5" />
+          </label>
+
+          <label>
+            <span>Price (UAH) *</span>
+            <input formControlName="price" type="number" min="0" step="50" />
+          </label>
+
+          <label>
+            <span>Description</span>
+            <textarea formControlName="description" rows="3" placeholder="Optional service description"></textarea>
+          </label>
+
+          <label class="toggle">
+            <input formControlName="isActive" type="checkbox" />
+            <span>Active</span>
+          </label>
+
+          <label>
+            <span>Responsible person <ng-container *ngIf="service.controls['isActive'].value">*</ng-container></span>
+            <select formControlName="responsibleLogin">
+              <option value="">Select login</option>
+              <option *ngFor="let candidate of responsibleCandidates" [value]="candidate.login">
+                {{ candidate.login }}{{ candidate.isOwner ? ' (owner)' : '' }}
+              </option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="setup-card" *ngIf="activeTab === 'team'">
+      <h2>Team (staff + owner)</h2>
+      <p class="setup-card__hint">Add at least one staff member by login. Owner is available for services by default.</p>
+
+      <label>
+        <span>Search by login</span>
+        <input
+          type="text"
+          [value]="staffQuery"
+          (input)="searchStaff($any($event.target).value)"
+          placeholder="Type login..."
+        />
+      </label>
+
+      <p *ngIf="isSearchingStaff" class="setup-card__hint">Searching...</p>
+
+      <div class="staff-results" *ngIf="!isSearchingStaff && staffSearchResults.length">
+        <button
+          type="button"
+          class="staff-results__item"
+          *ngFor="let candidate of staffSearchResults"
+          (click)="addMember(candidate)"
+          [disabled]="candidate.isOwner || isMemberSelected(candidate.login)"
+        >
+          <strong>{{ candidate.login }}</strong>
+          <span>{{ candidate.name }}{{ candidate.isOwner ? ' (owner)' : '' }}</span>
+        </button>
+      </div>
+
+      <div class="selected-members">
+        <h3>Selected staff (minimum 1)</h3>
+        <p class="setup-card__hint" *ngIf="selectedMembers.length === 0">No staff selected yet.</p>
+
+        <div class="selected-members__list" *ngIf="selectedMembers.length > 0">
+          <div class="selected-members__item" *ngFor="let member of selectedMembers">
+            <span>{{ member.login }} - {{ member.name }}</span>
+            <button type="button" class="danger" (click)="removeMember(member.login)">Remove</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="setup-form__actions">
+      <button type="button" class="secondary" (click)="previousTab()" [disabled]="activeTab === 'summary' || isSubmitting">Back</button>
+      <button type="button" class="secondary" (click)="nextTab()" *ngIf="activeTab !== 'team'" [disabled]="isSubmitting">Next</button>
+      <button type="submit" *ngIf="activeTab === 'team'" [disabled]="isSubmitting">{{ isSubmitting ? 'Creating...' : 'Create organisation' }}</button>
+    </div>
+  </form>
+</section>

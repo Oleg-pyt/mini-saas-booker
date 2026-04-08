@@ -1,0 +1,53 @@
+<section *ngIf="isLoading" class="booking-page reveal">
+  <p>Loading booking flow...</p>
+</section>
+
+<section *ngIf="!isLoading && business as data" class="booking-page reveal">
+  <a [routerLink]="['/business', data.id]">Back to business details</a>
+
+  <ng-container *ngIf="state$ | async as state">
+    <header class="booking-page__header">
+      <h1>Book a visit at {{ data.name }}</h1>
+      <p>{{ data.type }} in {{ data.city }}</p>
+
+      <div class="booking-page__progress" aria-label="Booking progress">
+        <div class="booking-page__progress-track">
+          <span class="booking-page__progress-fill" [style.width.%]="(state.step / 2) * 100"></span>
+        </div>
+        <ol class="booking-page__progress-labels">
+          <li [class.is-active]="state.step >= 1">1. Service & slot</li>
+          <li [class.is-active]="state.step >= 2">2. Review</li>
+        </ol>
+      </div>
+    </header>
+
+    <p class="booking-page__error" *ngIf="state.error">{{ state.error }}</p>
+
+    <app-booking-step-service
+      *ngIf="state.step === 1"
+      [services]="state.services"
+      [selectedServiceId]="state.selectedServiceId"
+      [slots]="state.availableSlots"
+      [selectedSlotId]="state.selectedSlotId"
+      [isLoadingSlots]="state.isLoadingSlots"
+      (serviceSelected)="onServiceSelected($event)"
+      (slotSelected)="onSlotSelected($event)"
+      (continueClicked)="continueFromSelection()"
+    ></app-booking-step-service>
+
+    <app-booking-step-review
+      *ngIf="state.step === 2"
+      [businessName]="state.businessName"
+      [businessAddress]="data.address"
+      [serviceName]="(selectedService$ | async)?.name ?? ''"
+      [servicePrice]="(selectedService$ | async)?.price ?? 0"
+      [customerName]="customerName"
+      [notes]="state.notes"
+      [selectedSlot]="selectedSlot$ | async"
+      [isSubmitting]="state.isSubmitting"
+      (backClicked)="backToSelection()"
+      (notesChanged)="onNotesChanged($event)"
+      (confirmClicked)="confirmBooking()"
+    ></app-booking-step-review>
+  </ng-container>
+</section>

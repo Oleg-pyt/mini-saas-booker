@@ -1,0 +1,86 @@
+:host {
+  display: block;
+}
+
+.business-card {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
+
+  h3 {
+    padding: 0 1rem;
+    margin: 0.7rem 0 0.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+.business-card__media {
+  margin: 0;
+  aspect-ratio: 16 / 9;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.business-card__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 1rem 1rem 0;
+}
+
+.business-card__type {
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 0.18rem 0.62rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.business-card__city,
+.business-card__price,
+.business-card__rating,
+.business-card__slot {
+  padding: 0 1rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.business-card__actions {
+  margin: 0.9rem 1rem 1rem;
+  display: flex;
+  gap: 0.55rem;
+}
+
+.link-primary,
+.link-secondary {
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  padding: 0.48rem 0.72rem;
+  font-size: 0.87rem;
+  font-weight: 700;
+}
+
+.link-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #ffffff;
+}
+
+.link-secondary {
+  border: 1px solid var(--line-strong);
+  color: var(--text-main);
+  background: var(--surface);
+}

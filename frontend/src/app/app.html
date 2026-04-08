@@ -1,0 +1,115 @@
+<div class="app-shell">
+	<header class="app-header">
+		<a routerLink="/" class="brand" aria-label="Booker home">
+			<span class="brand__mark">B</span>
+			<span class="brand__name">Booker</span>
+		</a>
+
+		<ng-container *ngIf="authState$ | async as auth">
+			<div class="app-header__actions" *ngIf="!auth.token && !isAuthRoute; else authenticatedActions">
+				<a routerLink="/auth/login" class="auth-link">Login</a>
+				<a routerLink="/auth/register" class="auth-link auth-link--accent">Register</a>
+				<button type="button" class="theme-toggle" (click)="toggleTheme()">
+					Theme: {{ currentTheme === 'light' ? 'Light' : 'Dark' }}
+				</button>
+			</div>
+
+			<ng-template #authenticatedActions>
+				<div class="app-header__actions" *ngIf="auth.token; else themeOnlyActions">
+					<div class="account-menu" (click)="$event.stopPropagation()">
+						<button
+							type="button"
+							class="account-menu__trigger"
+							(click)="toggleAccountMenu($event)"
+							[attr.aria-expanded]="isAccountMenuOpen"
+							aria-haspopup="menu"
+							aria-label="Open account menu"
+						>
+							<div class="profile-pill account-menu__trigger-profile">
+								<span class="profile-pill__avatar">{{ (auth.user?.name || auth.user?.login || 'U').charAt(0) }}</span>
+								<div class="profile-pill__identity">
+									<span class="profile-pill__name">{{ auth.user?.name || auth.user?.login }}</span>
+									<span class="profile-pill__login">@{{ auth.user?.login }}</span>
+								</div>
+								<span class="account-menu__chevron" aria-hidden="true">
+									<span></span>
+									<span></span>
+								</span>
+							</div>
+
+							<span class="account-menu__burger" aria-hidden="true">
+								<span></span>
+								<span></span>
+								<span></span>
+							</span>
+						</button>
+
+						<div class="account-menu__backdrop" *ngIf="isAccountMenuOpen" (click)="closeAccountMenu($event)"></div>
+						<div class="account-menu__panel" *ngIf="isAccountMenuOpen" role="menu">
+							<div class="account-menu__handle" aria-hidden="true"></div>
+							<div class="account-menu__summary">
+								<span class="profile-pill__avatar profile-pill__avatar--large">{{ (auth.user?.name || auth.user?.login || 'U').charAt(0) }}</span>
+								<div class="account-menu__summary-text">
+									<span class="profile-pill__name">{{ auth.user?.name || auth.user?.login }}</span>
+									<span class="profile-pill__login">@{{ auth.user?.login }}</span>
+									<span class="account-menu__summary-caption">Account controls</span>
+								</div>
+							</div>
+
+							<a
+								*ngIf="isBusinessOwner(auth)"
+								routerLink="/setup"
+								class="account-menu__item"
+								role="menuitem"
+								(click)="closeAccountMenu($event)"
+							>
+								<span class="account-menu__item-main">
+									<span class="account-menu__icon">S</span>
+									<span class="account-menu__item-copy">
+										<span>Setup</span>
+										<span class="account-menu__item-hint">Business space</span>
+									</span>
+								</span>
+								<span class="account-menu__item-meta">Open</span>
+							</a>
+
+							<button type="button" class="account-menu__item" role="menuitem" (click)="toggleTheme()">
+								<span class="account-menu__item-main">
+									<span class="account-menu__icon account-menu__icon--theme">T</span>
+									<span class="account-menu__item-copy">
+										<span>Theme</span>
+										<span class="account-menu__item-hint">Appearance mode</span>
+									</span>
+								</span>
+								<span class="account-menu__item-meta">{{ currentTheme === 'light' ? 'Light' : 'Dark' }}</span>
+							</button>
+
+							<button type="button" class="account-menu__item account-menu__item--danger" role="menuitem" (click)="logout()">
+								<span class="account-menu__item-main">
+									<span class="account-menu__icon account-menu__icon--danger">L</span>
+									<span class="account-menu__item-copy">
+										<span>Logout</span>
+										<span class="account-menu__item-hint">End current session</span>
+									</span>
+								</span>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<ng-template #themeOnlyActions>
+					<div class="app-header__actions">
+					<button type="button" class="theme-toggle" (click)="toggleTheme()">
+						Theme: {{ currentTheme === 'light' ? 'Light' : 'Dark' }}
+					</button>
+				</div>
+				</ng-template>
+			</ng-template>
+		</ng-container>
+	</header>
+
+	<main class="app-content">
+		<router-outlet></router-outlet>
+	</main>
+</div>
+<app-toast-container></app-toast-container>

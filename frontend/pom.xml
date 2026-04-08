@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.benatti</groupId>
+    <artifactId>saas</artifactId>
+    <version>0.0.1</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>frontend</artifactId>
+  <name>frontend</name>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.benatti</groupId>
+      <artifactId>saas-api</artifactId>
+      <version>${project.version}</version>
+      <type>tgz</type>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-api-npm-package</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.benatti</groupId>
+                  <artifactId>saas-api</artifactId>
+                  <version>${project.version}</version>
+                  <type>tgz</type>
+                  <destFileName>api.tgz</destFileName>
+                  <outputDirectory>${project.basedir}/.generated</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>install-node-and-npm</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <configuration>
+              <installDirectory>${project.build.directory}</installDirectory>
+              <nodeVersion>${node.version}</nodeVersion>
+              <npmVersion>${npm.version}</npmVersion>
+              <workingDirectory>${project.basedir}</workingDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm-ci</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <installDirectory>${project.build.directory}</installDirectory>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>${npm.install.command}</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm-build</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <installDirectory>${project.build.directory}</installDirectory>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm-install-generated-api</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <installDirectory>${project.build.directory}</installDirectory>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>install .generated/api.tgz --no-save</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>normalize-dist-folder</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="${project.build.directory}/web-resources"/>
+                <condition property="angular.dist.primary"
+                           value="${project.basedir}/dist/browser"
+                           else="${project.basedir}/dist/frontend/browser">
+                  <available file="${project.basedir}/dist/browser" type="dir"/>
+                </condition>
+                <condition property="angular.dist.secondary"
+                           value="${angular.dist.primary}"
+                           else="${project.basedir}/dist/frontend">
+                  <available file="${angular.dist.primary}" type="dir"/>
+                </condition>
+                <condition property="angular.dist.final"
+                           value="${angular.dist.secondary}"
+                           else="${project.basedir}/dist">
+                  <available file="${angular.dist.secondary}" type="dir"/>
+                </condition>
+                <echo>Using frontend dist path: ${angular.dist.final}</echo>
+                <copy todir="${project.build.directory}/web-resources" overwrite="true">
+                  <fileset dir="${angular.dist.final}"/>
+                </copy>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-frontend-into-meta-inf</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/META-INF/resources</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/web-resources</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

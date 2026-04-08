@@ -1,0 +1,34 @@
+<section class="dashboard reveal">
+	<header class="dashboard__header">
+		<div class="dashboard__hero">
+			<p class="dashboard__eyebrow">Bold Booking Platform</p>
+			<h1>Find premium services and book in seconds.</h1>
+			<p>From beauty to health and fitness, Booker helps clients reserve visit times with confidence.</p>
+		</div>
+	</header>
+
+	@if (isLoading) {
+		<p>Loading premium businesses...</p>
+	}
+	@else {
+		<app-business-filters
+			[businessTypes]="businessTypes"
+			[cities]="cities"
+			[selectedType]="filters.selectedType"
+			[selectedCity]="filters.selectedCity"
+			[searchTerm]="filters.searchTerm"
+			[minimumRating]="filters.minimumRating"
+			(selectedTypeChange)="onTypeChanged($event)"
+			(selectedCityChange)="onCityChanged($event)"
+			(searchTermChange)="onSearchChanged($event)"
+			(minimumRatingChange)="onMinimumRatingChanged($event)"
+		></app-business-filters>
+	}
+	@if (error) {
+		<p class="dashboard__error">{{ error }}</p>
+	}
+
+	@if (!isLoading && !error) {
+		<app-business-list [businesses]="filteredBusinesses"></app-business-list>
+	}
+</section>

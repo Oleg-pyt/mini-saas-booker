@@ -1,0 +1,27 @@
+<article class="business-card">
+  <figure class="business-card__media">
+    <img [src]="business.coverImageUrl" [alt]="business.name" />
+  </figure>
+
+  <div class="business-card__top">
+    <span class="business-card__type">{{ business.type }}</span>
+    <span class="business-card__city">{{ business.city }}</span>
+  </div>
+
+  <h3>{{ business.name }}</h3>
+
+  <p class="business-card__rating">
+    Rating: <strong>{{ business.rating }}</strong> ({{ business.reviewsCount }} reviews)
+  </p>
+
+  <p class="business-card__price">From <strong>{{ business.priceFrom }} UAH</strong></p>
+
+  <p class="business-card__slot">
+    Next available: <strong>{{ business.nextAvailableSlot.label }}</strong>
+  </p>
+
+  <div class="business-card__actions">
+    <a [routerLink]="['/business', business.id]" class="link-secondary">View details</a>
+    <a [routerLink]="['/business', business.id, 'book']" class="link-primary">Book now</a>
+  </div>
+</article>

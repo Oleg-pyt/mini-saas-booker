@@ -1,0 +1,23 @@
+<section class="step-card">
+  <header>
+    <h2>Step 2: Select slot</h2>
+    <p>Slots are calculated live from working hours and existing bookings.</p>
+  </header>
+
+  <p *ngIf="isLoading" class="step-card__hint">Loading available slots...</p>
+
+  <label class="slot-item" *ngFor="let slot of slots">
+    <input
+      type="radio"
+      name="slot"
+      [value]="slot.id"
+      [checked]="selectedSlotId === slot.id"
+      (change)="onSlotChanged($event)"
+    />
+    <span>{{ slot.label }}</span>
+  </label>
+
+  <p *ngIf="!isLoading && !slots.length" class="step-card__hint">No available slots found for this service yet.</p>
+
+  <button type="button" (click)="onContinue()" [disabled]="isLoading || !selectedSlotId">Continue</button>
+</section>

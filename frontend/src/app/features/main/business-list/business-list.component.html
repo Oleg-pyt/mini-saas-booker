@@ -1,0 +1,10 @@
+<section *ngIf="businesses.length; else emptyState" class="business-list">
+  <app-business-card *ngFor="let business of businesses" [business]="business"></app-business-card>
+</section>
+
+<ng-template #emptyState>
+  <section class="business-list__empty">
+    <h3>No businesses found</h3>
+    <p>Try changing the filters to see more results.</p>
+  </section>
+</ng-template>

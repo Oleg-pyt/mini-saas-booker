@@ -1,0 +1,75 @@
+.step-card {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  padding: 1rem;
+  box-shadow: var(--shadow-soft);
+
+  h2 {
+    margin: 0;
+  }
+
+  p {
+    color: var(--text-muted);
+    margin: 0.35rem 0 0.9rem;
+  }
+
+  dl {
+    margin: 0;
+  }
+
+  dt {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  dd {
+    margin: 0.1rem 0 0.8rem;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+}
+
+.step-card__field {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+  color: var(--text-main);
+  font-weight: 600;
+
+  span {
+    font-size: 0.92rem;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 6rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--surface) 92%, var(--surface-alt));
+    color: var(--text-main);
+    padding: 0.75rem 0.85rem;
+    font: inherit;
+  }
+}
+
+.step-card__actions {
+  display: flex;
+  gap: 0.6rem;
+
+  button {
+    border: 0;
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.95rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .secondary {
+    background: color-mix(in srgb, var(--surface) 86%, var(--line-strong));
+    color: var(--text-main);
+    border: 1px solid var(--line-strong);
+  }
+}

@@ -1,0 +1,52 @@
+<section *ngIf="isLoading" class="details">
+  <p>Loading business details...</p>
+</section>
+
+<section *ngIf="!isLoading && business as data; else notFound" class="details">
+  <a routerLink="/">Back to dashboard</a>
+
+  <figure class="details__cover">
+    <img [src]="data.coverImageUrl" [alt]="data.name" />
+  </figure>
+
+  <header class="details__header">
+    <p>{{ data.type }} in {{ data.city }}</p>
+    <h1>{{ data.name }}</h1>
+    <p>Rating {{ data.rating }} ({{ data.reviewsCount }} reviews)</p>
+  </header>
+
+  <section class="details__summary">
+    <p>{{ data.description }}</p>
+    <p><strong>Address:</strong> {{ data.address }}</p>
+    <p><strong>Price from:</strong> {{ data.priceFrom }} UAH</p>
+    <p><strong>Next available:</strong> {{ data.nextAvailableSlot.label }}</p>
+    <a [routerLink]="['/business', data.id, 'book']">Start booking</a>
+  </section>
+
+  <details open>
+    <summary>Services</summary>
+    <ul>
+      <li *ngFor="let service of data.services">
+        <strong>{{ service.name }}</strong> · {{ service.durationMinutes }} min · {{ service.price }} UAH
+        <p>{{ service.description }}</p>
+      </li>
+    </ul>
+  </details>
+
+  <details open>
+    <summary>Booking model</summary>
+    <p>Choose a service first. Available slots are calculated live from working hours and existing bookings.</p>
+  </details>
+
+  <details>
+    <summary>Extension point: Booking rules</summary>
+    <p>Add cancellation policy, prepayment options, and business-specific booking constraints here.</p>
+  </details>
+</section>
+
+<ng-template #notFound>
+  <section *ngIf="!isLoading" class="details__not-found">
+    <h1>Business not found</h1>
+    <a routerLink="/">Back to dashboard</a>
+  </section>
+</ng-template>

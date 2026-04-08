@@ -1,0 +1,81 @@
+<section class="step-card">
+  <header>
+    <h2>Step 1: Service and time</h2>
+    <p>Select a service, then choose a day and slot from the calendar.</p>
+  </header>
+
+  <div class="service-list">
+    <label class="service-item" *ngFor="let service of services">
+      <input
+        type="radio"
+        name="service"
+        [value]="service.id"
+        [checked]="selectedServiceId === service.id"
+        (change)="onServiceChanged($event)"
+      />
+
+      <span class="service-item__content">
+        <strong>{{ service.name }}</strong>
+        <small>{{ service.durationMinutes }} min · {{ service.price }} UAH</small>
+        <span>{{ service.description }}</span>
+      </span>
+    </label>
+  </div>
+
+  <section class="calendar-panel">
+    <header class="calendar-panel__header">
+      <h3>Calendar</h3>
+      <div class="calendar-nav">
+        <button type="button" class="calendar-nav__btn" (click)="previousMonth()" aria-label="Previous month">Prev</button>
+        <strong>{{ monthLabel }}</strong>
+        <button type="button" class="calendar-nav__btn" (click)="nextMonth()" aria-label="Next month">Next</button>
+      </div>
+    </header>
+
+    <div class="calendar-weekdays">
+      <span>Mon</span>
+      <span>Tue</span>
+      <span>Wed</span>
+      <span>Thu</span>
+      <span>Fri</span>
+      <span>Sat</span>
+      <span>Sun</span>
+    </div>
+
+    <div class="calendar-grid">
+      <button
+        type="button"
+        class="calendar-day"
+        *ngFor="let cell of calendarCells"
+        [class.calendar-day--muted]="!cell.isInCurrentMonth"
+        [class.calendar-day--has-slots]="cell.hasSlots"
+        [class.calendar-day--selected]="selectedDayKey === cell.dayKey"
+        [disabled]="!cell.hasSlots"
+        (click)="selectDay(cell.dayKey)"
+      >
+        {{ cell.dayNumber }}
+      </button>
+    </div>
+
+    <p *ngIf="isLoadingSlots" class="step-card__hint">Loading available slots...</p>
+
+    <div class="slots-list" *ngIf="!isLoadingSlots && selectedDaySlots.length">
+      <label class="slot-item" *ngFor="let slot of selectedDaySlots">
+        <input
+          type="radio"
+          name="slot"
+          [value]="slot.id"
+          [checked]="selectedSlotId === slot.id"
+          (change)="onSlotChanged($event)"
+        />
+        <span>{{ formatSlotTime(slot.startAt) }}</span>
+      </label>
+    </div>
+
+    <p *ngIf="!isLoadingSlots && !selectedDaySlots.length" class="step-card__hint">No available slots on selected day.</p>
+  </section>
+
+  <button type="button" (click)="onContinue()" [disabled]="!selectedServiceId || !selectedSlotId || isLoadingSlots">
+    Continue to review
+  </button>
+</section>

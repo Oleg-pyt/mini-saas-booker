@@ -1,0 +1,1326 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Production Ready Platform API",
+    "version": "1.0.0",
+    "description": "REST API for Production Ready Platform with generated TypeScript and Java clients"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Service health and status checks"
+    },
+    {
+      "name": "Auth",
+      "description": "Authentication operations"
+    },
+    {
+      "name": "Catalog",
+      "description": "Business catalog operations"
+    },
+    {
+      "name": "Bookings",
+      "description": "Booking operations"
+    },
+    {
+      "name": "Setup",
+      "description": "Business setup operations"
+    },
+    {
+      "name": "Users",
+      "description": "User management operations"
+    },
+    {
+      "name": "System",
+      "description": "System and configuration endpoints"
+    }
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health check",
+        "description": "Returns the current health status of the service",
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register user",
+        "description": "Creates a new user account",
+        "operationId": "register",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email already exists"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login user",
+        "description": "Authenticates user credentials and returns access token",
+        "operationId": "login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/api/auth/validate": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Validate access token",
+        "description": "Validates bearer token and returns current authenticated user",
+        "operationId": "validateToken",
+        "responses": {
+          "200": {
+            "description": "Token is valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token is invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Logout user",
+        "description": "Revokes current access token",
+        "operationId": "logout",
+        "responses": {
+          "204": {
+            "description": "Logged out successfully"
+          },
+          "401": {
+            "description": "Token is invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/catalog/businesses": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Get businesses",
+        "description": "Returns list of businesses for dashboard",
+        "operationId": "getBusinesses",
+        "responses": {
+          "200": {
+            "description": "Businesses list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BusinessSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalog/businesses/{businessId}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Get business details",
+        "description": "Returns details for one business",
+        "operationId": "getBusinessById",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Business details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BusinessDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Business not found"
+          }
+        }
+      }
+    },
+    "/api/catalog/businesses/{businessId}/slots": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Get available business slots",
+        "description": "Returns computed available slots for selected business service",
+        "operationId": "getAvailableSlots",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "serviceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Available slots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TimeSlot"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Business or service not found"
+          }
+        }
+      }
+    },
+    "/api/bookings": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Create booking",
+        "description": "Creates and persists booking for selected service and start time",
+        "operationId": "createBooking",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Booking created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingConfirmationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid booking payload"
+          },
+          "404": {
+            "description": "Business or slot not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/setup/organisations": {
+      "get": {
+        "tags": [
+          "Setup"
+        ],
+        "summary": "Get owner organisations",
+        "description": "Returns organisations that belong to current BUSINESS_OWNER",
+        "operationId": "getOwnedOrganisations",
+        "responses": {
+          "200": {
+            "description": "Owner organisations list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SetupOwnedBusiness"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Only BUSINESS_OWNER can access setup organisations"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Setup"
+        ],
+        "summary": "Create organisation",
+        "description": "Creates a new organisation entry for BUSINESS_OWNER setup flow",
+        "operationId": "createOrganisation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganisationSetupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Organisation created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganisationSetupResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid setup payload"
+          },
+          "409": {
+            "description": "Slug already exists"
+          },
+          "403": {
+            "description": "Only BUSINESS_OWNER can create organisations"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/setup/organisations/{businessId}": {
+      "put": {
+        "tags": [
+          "Setup"
+        ],
+        "summary": "Update organisation",
+        "description": "Updates mutable organisation data for current BUSINESS_OWNER. Name and slug are immutable after creation.",
+        "operationId": "updateOrganisation",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganisationSetupUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Organisation updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganisationSetupResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Only BUSINESS_OWNER can update organisations"
+          },
+          "404": {
+            "description": "Business not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/setup/staff/search": {
+      "get": {
+        "tags": [
+          "Setup"
+        ],
+        "summary": "Search staff candidates",
+        "description": "Searches users by login for setup staff selection. Owner is always included when matching query.",
+        "operationId": "searchStaffCandidates",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 60
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Staff candidates list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SetupStaffCandidate"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Only BUSINESS_OWNER can search setup staff"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/setup/organisations/{businessId}/draft": {
+      "get": {
+        "tags": [
+          "Setup"
+        ],
+        "summary": "Get organisation setup draft",
+        "description": "Returns summary, staff and services data required by setup edit tabs.",
+        "operationId": "getOrganisationDraft",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organisation draft",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupOrganisationDraft"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Only BUSINESS_OWNER can access organisation draft"
+          },
+          "404": {
+            "description": "Business not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/setup/organisations/{businessId}/staff": {
+      "put": {
+        "tags": [
+          "Setup"
+        ],
+        "summary": "Update organisation staff",
+        "description": "Replaces organisation staff list used in setup services assignment.",
+        "operationId": "updateOrganisationStaff",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetupUpdateStaffRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated staff list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SetupStaffCandidate"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Only BUSINESS_OWNER can update organisation staff"
+          },
+          "404": {
+            "description": "Business not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/setup/organisations/{businessId}/services": {
+      "put": {
+        "tags": [
+          "Setup"
+        ],
+        "summary": "Update organisation services",
+        "description": "Replaces setup services and responsible staff assignments.",
+        "operationId": "updateOrganisationServices",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetupUpdateServicesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated services list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SetupServiceDraft"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Only BUSINESS_OWNER can update organisation services"
+          },
+          "404": {
+            "description": "Business not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "TimeSlot": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "bold-cut-1"
+          },
+          "label": {
+            "type": "string",
+            "example": "Sun, Apr 06, 14:30"
+          },
+          "startAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "startAt"
+        ]
+      },
+      "BusinessSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "number",
+            "format": "double"
+          },
+          "reviewsCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "coverImageUrl": {
+            "type": "string"
+          },
+          "priceFrom": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextAvailableSlot": {
+            "$ref": "#/components/schemas/TimeSlot"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "name",
+          "city",
+          "rating",
+          "reviewsCount",
+          "coverImageUrl",
+          "priceFrom",
+          "nextAvailableSlot"
+        ]
+      },
+      "BusinessService": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "durationMinutes",
+          "price",
+          "isActive"
+        ]
+      },
+      "BusinessDetails": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BusinessSummary"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "address": {
+                "type": "string"
+              },
+              "priceFrom": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "services": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BusinessService"
+                }
+              }
+            },
+            "required": [
+              "description",
+              "address",
+              "priceFrom",
+              "services"
+            ]
+          }
+        ]
+      },
+      "BookingCreateRequest": {
+        "type": "object",
+        "properties": {
+          "businessId": {
+            "type": "string"
+          },
+          "serviceId": {
+            "type": "string"
+          },
+          "startAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "businessId",
+          "serviceId",
+          "startAt"
+        ]
+      },
+      "BookingConfirmationResponse": {
+        "type": "object",
+        "properties": {
+          "confirmationId": {
+            "type": "string",
+            "example": "BK-123456"
+          },
+          "businessId": {
+            "type": "string"
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "serviceName": {
+            "type": "string"
+          },
+          "slotLabel": {
+            "type": "string"
+          },
+          "clientName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "confirmationId",
+          "businessId",
+          "businessName",
+          "serviceName",
+          "slotLabel",
+          "clientName"
+        ]
+      },
+      "OrganisationSetupServiceRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 5
+          },
+          "price": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "responsibleLogin": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "name",
+          "durationMinutes",
+          "price",
+          "isActive"
+        ]
+      },
+      "OrganisationSetupRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "minLength": 3,
+            "maxLength": 80
+          },
+          "image": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "type": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "address": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "members": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 60
+            }
+          },
+          "services": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/OrganisationSetupServiceRequest"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "slug",
+          "image",
+          "type",
+          "city",
+          "address",
+          "members",
+          "services"
+        ]
+      },
+      "OrganisationSetupUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "image": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "type": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "address": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "image",
+          "type",
+          "city",
+          "address"
+        ]
+      },
+      "OrganisationSetupResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name"
+        ]
+      },
+      "SetupOwnedBusiness": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "type",
+          "city",
+          "image"
+        ]
+      },
+      "SetupStaffCandidate": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isOwner": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "login",
+          "name",
+          "isOwner"
+        ]
+      },
+      "SetupServiceDraft": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "responsibleLogin": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "durationMinutes",
+          "price",
+          "description",
+          "isActive"
+        ]
+      },
+      "SetupOrganisationDraft": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/SetupStaffCandidate"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetupStaffCandidate"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetupServiceDraft"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "slug",
+          "image",
+          "type",
+          "city",
+          "address",
+          "description",
+          "owner",
+          "members",
+          "services"
+        ]
+      },
+      "SetupUpdateStaffRequest": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 60
+            }
+          }
+        },
+        "required": [
+          "members"
+        ]
+      },
+      "SetupUpdateServicesRequest": {
+        "type": "object",
+        "properties": {
+          "services": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/OrganisationSetupServiceRequest"
+            }
+          }
+        },
+        "required": [
+          "services"
+        ]
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "description": "Register payload",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 120,
+            "example": "John Doe"
+          },
+          "login": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 60,
+            "example": "john_doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@booker.app"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 120,
+            "example": "Str0ngPass!"
+          }
+        },
+        "required": [
+          "name",
+          "login",
+          "email",
+          "password"
+        ]
+      },
+      "LoginRequest": {
+        "type": "object",
+        "description": "Login payload",
+        "properties": {
+          "login": {
+            "type": "string",
+            "example": "john_doe"
+          },
+          "password": {
+            "type": "string",
+            "example": "Str0ngPass!"
+          }
+        },
+        "required": [
+          "login",
+          "password"
+        ]
+      },
+      "AuthResponse": {
+        "type": "object",
+        "description": "Authentication response",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "example": "mock-token-123"
+          },
+          "tokenType": {
+            "type": "string",
+            "example": "Bearer"
+          },
+          "user": {
+            "$ref": "#/components/schemas/AuthUser"
+          }
+        },
+        "required": [
+          "accessToken",
+          "tokenType",
+          "user"
+        ]
+      },
+      "AuthUser": {
+        "type": "object",
+        "description": "Authenticated user details",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "login": {
+            "type": "string",
+            "example": "john_doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@booker.app"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "BUSINESS_OWNER"
+            ],
+            "example": "USER"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "login",
+          "email",
+          "role"
+        ]
+      },
+      "HealthResponse": {
+        "type": "object",
+        "description": "Health status response",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "UP",
+            "description": "Service status (UP, DOWN, or custom states)"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      }
+    }
+  }
+}
+
+
+

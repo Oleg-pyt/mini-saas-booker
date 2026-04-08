@@ -1,0 +1,37 @@
+<section class="setup-entry reveal">
+  <header class="setup-entry__header">
+    <div>
+      <p class="setup-entry__eyebrow">Setup</p>
+      <h1>Your businesses</h1>
+      <p>Manage existing business pages or create a new organisation.</p>
+    </div>
+
+    <a routerLink="/setup/organisation" class="setup-entry__add-btn">Add new business</a>
+  </header>
+
+  <div class="setup-entry__state" *ngIf="isLoading">Loading businesses...</div>
+  <div class="setup-entry__state setup-entry__state--error" *ngIf="!isLoading && error">{{ error }}</div>
+
+  <div class="setup-entry__empty" *ngIf="!isLoading && !error && businesses.length === 0">
+    <h2>No businesses yet</h2>
+    <p>Create your first business profile to start receiving bookings.</p>
+    <a routerLink="/setup/organisation" class="setup-entry__add-btn">Create business</a>
+  </div>
+
+  <section class="setup-entry__list" *ngIf="!isLoading && !error && businesses.length > 0">
+    <article class="setup-business-card" *ngFor="let business of businesses">
+      <img [src]="business.coverImageUrl" [alt]="business.name" loading="lazy" />
+
+      <div class="setup-business-card__content">
+        <p class="setup-business-card__type">{{ business.type }}</p>
+        <h2>{{ business.name }}</h2>
+        <p class="setup-business-card__meta">{{ business.city }}</p>
+      </div>
+
+      <div class="setup-business-card__actions">
+        <a [routerLink]="['/business', business.slug]" class="setup-business-card__open">Open</a>
+        <a [routerLink]="['/setup/organisation', business.slug, 'edit']" class="setup-business-card__edit">Edit</a>
+      </div>
+    </article>
+  </section>
+</section>

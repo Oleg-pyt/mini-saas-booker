@@ -1,0 +1,13 @@
+<section class="toast-container" aria-live="polite" aria-atomic="true">
+  <article
+    *ngFor="let toast of toasts$ | async"
+    class="toast"
+    [class.toast--success]="toast.variant === 'success'"
+    [class.toast--error]="toast.variant === 'error'"
+    [class.toast--info]="toast.variant === 'info'"
+    role="status"
+  >
+    <p>{{ toast.message }}</p>
+    <button type="button" aria-label="Dismiss" (click)="dismiss(toast.id)">x</button>
+  </article>
+</section>

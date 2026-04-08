@@ -1,0 +1,45 @@
+<section class="step-card">
+  <header>
+    <h2>Step 3: Review</h2>
+    <p>Check details before confirming your booking.</p>
+  </header>
+
+  <dl>
+    <div>
+      <dt>Business</dt>
+      <dd>{{ businessName }}</dd>
+    </div>
+    <div>
+      <dt>Address</dt>
+      <dd>{{ businessAddress }}</dd>
+    </div>
+    <div>
+      <dt>Service</dt>
+      <dd>{{ serviceName }}</dd>
+    </div>
+    <div>
+      <dt>Price</dt>
+      <dd>{{ servicePrice }} UAH</dd>
+    </div>
+    <div>
+      <dt>Slot</dt>
+      <dd>{{ selectedSlot?.label }}</dd>
+    </div>
+    <div>
+      <dt>Customer</dt>
+      <dd>{{ customerName }}</dd>
+    </div>
+  </dl>
+
+  <label class="step-card__field">
+    <span>Notes for the business</span>
+    <textarea [value]="notes" rows="4" maxlength="500" (input)="onNotesChanged($event)"></textarea>
+  </label>
+
+  <div class="step-card__actions">
+    <button type="button" class="secondary" (click)="onBack()" [disabled]="isSubmitting">Back</button>
+    <button type="button" (click)="onConfirm()" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Confirming...' : 'Confirm booking' }}
+    </button>
+  </div>
+</section>
