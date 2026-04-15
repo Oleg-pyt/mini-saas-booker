@@ -1,0 +1,60 @@
+<section class="setup-card">
+  <div class="setup-card__header">
+    <h2>Services *</h2>
+    <button type="button" class="secondary" (click)="onAddService()">Add service</button>
+  </div>
+
+  <div class="services-list">
+    <div class="service-item" *ngFor="let service of services.controls; let index = index" [formGroup]="service">
+      <div class="service-item__header">
+        <div class="service-item__title-wrap">
+          <h3>Service {{ index + 1 }}</h3>
+          <p class="service-item__summary">{{ getServiceSummary(index) }}</p>
+        </div>
+        <div class="service-item__actions">
+          <button type="button" class="secondary" (click)="toggleExpanded(index)" [attr.aria-expanded]="isExpanded(index)">
+            {{ isExpanded(index) ? 'Collapse' : 'Expand' }}
+          </button>
+          <button type="button" class="danger" (click)="onRemoveService(index)" [disabled]="services.length === 1">Remove</button>
+        </div>
+      </div>
+
+      <div class="service-item__content" *ngIf="isExpanded(index)">
+        <label>
+          <span>Name *</span>
+          <input formControlName="name" type="text" placeholder="Haircut" />
+        </label>
+
+        <label>
+          <span>Duration (minutes) *</span>
+          <input formControlName="durationMinutes" type="number" min="5" step="5" />
+        </label>
+
+        <label>
+          <span>Price (UAH) *</span>
+          <input formControlName="price" type="number" min="0" step="50" />
+        </label>
+
+        <label>
+          <span>Description</span>
+          <textarea formControlName="description" rows="3" placeholder="Optional service description"></textarea>
+        </label>
+
+        <label class="toggle">
+          <input formControlName="isActive" type="checkbox" />
+          <span>Active</span>
+        </label>
+
+        <label>
+          <span>Responsible person <ng-container *ngIf="service.controls['isActive'].value">*</ng-container></span>
+          <select formControlName="responsibleLogin">
+            <option value="">Select login</option>
+            <option *ngFor="let candidate of responsibleCandidates" [value]="candidate.login">
+              {{ candidate.login }}{{ candidate.isOwner ? ' (owner)' : '' }}
+            </option>
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+</section>

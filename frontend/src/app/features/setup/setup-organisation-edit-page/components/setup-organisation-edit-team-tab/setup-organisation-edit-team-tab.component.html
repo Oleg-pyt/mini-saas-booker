@@ -1,0 +1,41 @@
+<section class="setup-card">
+  <h2>Team (staff + owner)</h2>
+  <p class="setup-card__hint">Add at least one staff member by login. Owner is available for services by default.</p>
+
+  <label>
+    <span>Search by login</span>
+    <input
+      type="text"
+      [value]="staffQuery"
+      (input)="onSearch($any($event.target).value)"
+      placeholder="Type login..."
+    />
+  </label>
+
+  <p *ngIf="isSearchingStaff" class="setup-card__hint">Searching...</p>
+
+  <div class="staff-results" *ngIf="!isSearchingStaff && staffSearchResults.length">
+    <button
+      type="button"
+      class="staff-results__item"
+      *ngFor="let candidate of staffSearchResults"
+      (click)="onAddMember(candidate)"
+      [disabled]="candidate.isOwner || isMemberSelected(candidate.login)"
+    >
+      <strong>{{ candidate.login }}</strong>
+      <span>{{ candidate.name }}{{ candidate.isOwner ? ' (owner)' : '' }}</span>
+    </button>
+  </div>
+
+  <div class="selected-members">
+    <h3>Selected staff (minimum 1)</h3>
+    <p class="setup-card__hint" *ngIf="selectedMembers.length === 0">No staff selected yet.</p>
+
+    <div class="selected-members__list" *ngIf="selectedMembers.length > 0">
+      <div class="selected-members__item" *ngFor="let member of selectedMembers">
+        <span>{{ member.login }} - {{ member.name }}</span>
+        <button type="button" class="danger" (click)="onRemoveMember(member.login)">Remove</button>
+      </div>
+    </div>
+  </div>
+</section>

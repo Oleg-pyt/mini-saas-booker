@@ -1,0 +1,38 @@
+<section class="setup-card" [formGroup]="form">
+  <h2>Business profile</h2>
+
+  <label>
+    <span>Name (read only)</span>
+    <input formControlName="name" type="text" readonly />
+  </label>
+
+  <label>
+    <span>Slug (read only)</span>
+    <input formControlName="slug" type="text" readonly />
+  </label>
+
+  <label>
+    <span>Image URL *</span>
+    <input formControlName="image" type="url" placeholder="https://..." />
+  </label>
+
+  <label>
+    <span>Type *</span>
+    <input formControlName="type" type="text" placeholder="Barbershop" />
+  </label>
+
+  <label>
+    <span>City *</span>
+    <input formControlName="city" type="text" placeholder="Kyiv" />
+  </label>
+
+  <label>
+    <span>Address *</span>
+    <input formControlName="address" type="text" placeholder="12 Khreshchatyk St" />
+  </label>
+
+  <label>
+    <span>Description</span>
+    <textarea formControlName="description" rows="4" placeholder="Optional business description"></textarea>
+  </label>
+</section>
